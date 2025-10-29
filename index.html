@@ -755,53 +755,49 @@ return (
   onClick={() => {
     const { jsPDF } = window.jspdf;
 
+    // 58mm roll width; dynamic height
     const doc = new jsPDF({
       orientation: "portrait",
       unit: "mm",
-      format: [58, 65],
+      format: [58, 500], // start tall enough; no manual page breaks
     });
 
-    const pageHeight = 65;
-    const lineHeight = 4.5;
     let y = 9;
+    const lineHeight = 5; // slightly more spacing for bigger item font
 
-    const addLine = (text = "", size = 9, bold = false, align = "left") => {
+    const addLine = (text = "", size = 10, bold = false, align = "left") => {
       doc.setFontSize(size);
       doc.setFont("courier", bold ? "bold" : "normal");
-      if (y > pageHeight - 8) {
-        doc.addPage([58, 65], "portrait");
-        y = 9;
-      }
       doc.text(text, align === "center" ? 29 : 4, y, { align });
       y += lineHeight;
     };
 
     // ---- HEADER ----
-    addLine("Fish & Chips Shop", 10, true, "center");
-    addLine("------------------------------", 9, false, "center");
+    addLine("Fish & Chips Shop", 11, true, "center");
+    addLine("------------------------------", 10, false, "center");
     addLine(`Order Type: ${viewingOrder.type}`);
     addLine(`Time: ${viewingOrder.time}`);
     addLine(`Customer: ${viewingOrder.customer.name}`);
     addLine("------------------------------");
 
-    // ---- ITEMS ----
+    // ---- ITEMS (bigger font, no prices) ----
     viewingOrder.items.forEach((it) => {
-      addLine(`${it.name}  x${it.qty}`);
+      addLine(`${it.name}  x${it.qty}`, 11);
     });
 
     // ---- TOTAL ----
     addLine("------------------------------");
     addLine(
       `Total: £${(viewingOrder.totalPence / 100).toFixed(2)}`,
-      10,
+      11,
       true,
       "center"
     );
-    addLine("------------------------------", 9, false, "center");
+    addLine("------------------------------", 10, false, "center");
 
     // ---- DELIVERY ADDRESS ----
     if (viewingOrder.type === "delivery") {
-      addLine("Delivery Address", 10, true);
+      addLine("Delivery Address", 11, true);
       addLine("------------------------------");
       addLine(viewingOrder.customer.name);
       addLine(viewingOrder.customer.address);
@@ -810,15 +806,16 @@ return (
         addLine(`Phone: ${viewingOrder.customer.phone}`);
     }
 
-    // ---- OPEN PDF in new tab instead of saving ----
+    // ---- OPEN PDF in a new tab (mobile-safe) ----
     const pdfBlob = doc.output("blob");
     const pdfUrl = URL.createObjectURL(pdfBlob);
-    window.open(pdfUrl, "_blank"); // keeps app open underneath
+    window.open(pdfUrl, "_blank");
   }}
   className="px-4 py-2 rounded bg-slate-700 text-white font-semibold"
 >
   Download PDF Receipt
 </button>
+
 
 
 
