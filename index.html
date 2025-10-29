@@ -46,6 +46,35 @@ const { useState, useEffect, useMemo } = React;
 const formatCurrency = (pence) => '£' + (pence/100).toFixed(2);
 const uid = () => Date.now().toString(36) + Math.random().toString(36).slice(2,8);
 
+/* ---------- Format helpers ---------- */
+const formatAddress = (str = '') =>
+  str
+    .trim()
+    .toLowerCase()
+    .split(' ')
+    .filter(Boolean)
+    .map(w => w[0].toUpperCase() + w.slice(1))
+    .join(' ');
+
+const formatPostcode = (str = '') =>
+  str
+    .toUpperCase()
+    .replace(/\s+/g, '')
+    .replace(/^([A-Z0-9]{2,4})([A-Z0-9]{3})$/, '$1 $2')
+    .trim();
+
+const formatPhone = (str = '') =>
+  str
+    .replace(/\D/g, '')
+    .replace(/^0/, '0 ')
+    .replace(/(\d{4})(?=\d)/g, '$1 ')
+    .trim();
+
+
+// --- Delivery charge constant (always applied for delivery orders) ---
+const DELIVERY_CHARGE_PENCE = 300; // £3.00
+
+
 /* ---------- Default products (temporary) ---------- */
 const DEFAULT_PRODUCTS = [
   { id: 'cod', name: 'Cod & Chips', pricePence: 750, tags: ['mains'] },
@@ -146,7 +175,13 @@ const [viewingOrder, setViewingOrder] = useState(null);
 
   /* derived totals */
   const totalItems = useMemo(()=> orderItems.reduce((s,i)=>s + i.qty, 0), [orderItems]);
-  const grandTotalPence = useMemo(()=> orderItems.reduce((s,i)=> s + i.qty * i.pricePence, 0), [orderItems]);
+  // --- Grand total includes £3 delivery charge when applicable ---
+const grandTotalPence = useMemo(() => {
+  let total = orderItems.reduce((s, i) => s + i.qty * i.pricePence, 0);
+  if (orderType === 'delivery') total += DELIVERY_CHARGE_PENCE;
+  return total;
+}, [orderItems, orderType]);
+
 
   /* helpers */
   const showToast = (text, action=null) => {
@@ -234,25 +269,51 @@ const [viewingOrder, setViewingOrder] = useState(null);
   };
 
   /* saving new order (not editing) */
-  const saveOrder = () => {
-    if (!orderTime) { showToast('Please choose a time'); return; }
-    if (!customer.name.trim()) { showToast('Customer name required'); return; }
-    if (orderType === 'delivery' && (!customer.address.trim() || !customer.postcode.trim())) { showToast('Delivery address and postcode required'); return; }
+const saveOrder = () => {
+  // basic validations
+  if (!orderTime) { showToast('Please choose a time'); return; }
+  if (!customer || !customer.name || !customer.name.trim()) { showToast('Customer name required'); return; }
+  if (orderType === 'delivery' && (!customer.address || !customer.address.trim() || !customer.postcode || !customer.postcode.trim())) {
+    showToast('Delivery address and postcode required'); return;
+  }
 
-    const orderObj = {
-      id: uid(),
-      type: orderType,
-      items: orderItems.map(i => ({ ...i })),
-      time: orderTime,
-      customer: { ...customer },
-      totalPence: grandTotalPence,
-      createdAt: new Date().toISOString(),
-      status: 'pending'
+  // Format customer safely (fall back to trimmed values if anything goes wrong)
+  let formattedCustomer;
+  try {
+    formattedCustomer = {
+      ...customer,
+      name: formatAddress(customer.name || ''),
+      address: orderType === 'delivery' ? formatAddress(customer.address || '') : (customer.address || '').trim(),
+      postcode: orderType === 'delivery' ? formatPostcode(customer.postcode || '') : (customer.postcode || '').trim().toUpperCase(),
+      phone: formatPhone(customer.phone || ''),
     };
-    setOrders(prev => [orderObj, ...prev]);
-    showToast('Order saved');
-    clearActiveOrder();
+  } catch (e) {
+    // fallback — never let formatting throw an error that breaks the app
+    formattedCustomer = {
+      name: (customer.name || '').trim(),
+      address: (customer.address || '').trim(),
+      postcode: (customer.postcode || '').trim().toUpperCase(),
+      phone: (customer.phone || '').trim(),
+    };
+    console.warn('Formatting failed in saveOrder(), using trimmed values.', e);
+  }
+
+  const orderObj = {
+    id: uid(),
+    type: orderType,
+    items: orderItems.map(i => ({ ...i })),
+    time: orderTime,
+    customer: formattedCustomer,
+    totalPence: grandTotalPence,
+    createdAt: new Date().toISOString(),
+    status: 'pending'
   };
+
+  setOrders(prev => [orderObj, ...prev]);
+  showToast('Order saved');
+  clearActiveOrder();
+};
+
 
   /* mark complete / reopen / delete */
   const markComplete = (id) => { setOrders(prev => prev.map(o => o.id === id ? { ...o, status:'completed' } : o)); showToast('Order marked complete'); };
@@ -356,15 +417,18 @@ const doneEditing = () => {
     line('------------------------------');
 
     updatedOrder.items.forEach(it => {
-      line(`${it.name} x${it.qty}`);
-      line(`£${(it.pricePence * it.qty / 100).toFixed(2)}`);
-    });
+  line(`${it.name} x${it.qty}`);
+  line(`£${(it.pricePence * it.qty / 100).toFixed(2)}`);
+});
 
-    line('------------------------------');
-    line(`Total: £${(updatedOrder.totalPence / 100).toFixed(2)}`, 12, true);
-    line('------------------------------');
-    line(new Date().toLocaleString(), 8);
-    line('Thank you!', 10, true);
+// Add delivery charge if applicable
+if (updatedOrder.type === 'delivery') {
+  line('Delivery Charge: £3.00');
+}
+
+line('------------------------------');
+line(`Total: £${(updatedOrder.totalPence / 100).toFixed(2)}`, 12, true);
+
 
     doc.save(`order_${updatedOrder.customer.name || 'customer'}.pdf`);
   }
@@ -615,20 +679,30 @@ return (
                     </div>
 
                     <div className="mt-4">
-                      <h4 className={`${isDark ? 'text-white' : 'text-slate-800'} font-semibold`}>Items</h4>
-                      <div className="mt-2 space-y-2">
-                        {orderItems.map(it=>(
-                          <div key={it.productId} className="flex justify-between items-center">
-                            <div className={`${isDark ? 'text-slate-100' : 'text-slate-800'}`}>{it.name} × {it.qty}</div>
-                            <div className={`${isDark ? 'text-slate-200' : 'text-slate-600'}`}>{formatCurrency(it.pricePence * it.qty)}</div>
-                          </div>
-                        ))}
-                      </div>
-                      <div className="mt-3 border-t border-slate-700 pt-3 flex justify-between font-semibold">
-                        <div>Grand Total</div>
-                        <div>{formatCurrency(grandTotalPence)}</div>
-                      </div>
-                    </div>
+  <h4 className={`${isDark ? 'text-white' : 'text-slate-800'} font-semibold`}>Items</h4>
+  <div className="mt-2 space-y-2">
+    {orderItems.map(it=>(
+      <div key={it.productId} className="flex justify-between items-center">
+        <div className={`${isDark ? 'text-slate-100' : 'text-slate-800'}`}>{it.name} × {it.qty}</div>
+        <div className={`${isDark ? 'text-slate-200' : 'text-slate-600'}`}>{formatCurrency(it.pricePence * it.qty)}</div>
+      </div>
+    ))}
+  </div>
+
+  {/* Add delivery charge line when delivery order */}
+  {orderType === 'delivery' && (
+    <div className="mt-2 flex justify-between items-center">
+      <div className={`${isDark ? 'text-slate-100' : 'text-slate-800'}`}>Delivery Charge</div>
+      <div className={`${isDark ? 'text-slate-200' : 'text-slate-600'}`}>{formatCurrency(DELIVERY_CHARGE_PENCE)}</div>
+    </div>
+  )}
+
+  <div className="mt-3 border-t border-slate-700 pt-3 flex justify-between font-semibold">
+    <div>Grand Total</div>
+    <div>{formatCurrency(grandTotalPence)}</div>
+  </div>
+</div>
+
 
                     <div className="flex gap-3 mt-4">
                       <button onClick={() => setStep(4)} className="px-4 py-2 rounded-lg bg-slate-700 text-white">Back</button>
@@ -806,13 +880,18 @@ return (
     });
 
     // ---- TOTAL ----
-    addLine("------------------------------");
-    addLine(
-      `Total: £${(viewingOrder.totalPence / 100).toFixed(2)}`,
-      11,
-      true,
-      "center"
-    );
+if (viewingOrder.type === "delivery") {
+  addLine("Delivery Charge: £3.00");
+}
+
+addLine("------------------------------");
+addLine(
+  `Total: £${(viewingOrder.totalPence / 100).toFixed(2)}`,
+  11,
+  true,
+  "center"
+);
+
     addLine("------------------------------", 10, false, "center");
 
     // ---- DELIVERY ADDRESS ----
