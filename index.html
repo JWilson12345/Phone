@@ -388,50 +388,92 @@ const doneEditing = () => {
   showToast(`Changes saved for ${editingBannerCustomer || 'order'}`);
 
   // auto-generate a PDF receipt for the updated order
-  if (updatedOrder) {
-    const { jsPDF } = window.jspdf;
-    const doc = new jsPDF({
-      orientation: 'portrait',
-      unit: 'mm',
-      format: [58, 120],
+if (updatedOrder) {
+  const { jsPDF } = window.jspdf;
+  const doc = new jsPDF({
+    orientation: "portrait",
+    unit: "mm",
+    format: [58, 140],
+  });
+
+  const leftX = 4;
+  const rightX = 54;
+  const maxTextWidth = 40; // width allowed for item names before wrapping
+  let y = 6;
+  const lineH = 3.2;
+
+  const line = (txt, size = 6.5, bold = false, align = "left") => {
+    doc.setFontSize(size);
+    doc.setFont("helvetica", bold ? "bold" : "normal");
+    if (align === "center") doc.text(txt, 29, y, { align: "center" });
+    else doc.text(txt, leftX, y);
+    y += lineH;
+  };
+
+  // ---- HEADER ----
+  line("🐟 Fish & Chips Shop", 7.5, true, "center");
+  line("--------------------------------", 6.5, false, "center");
+  line(`Order Type: ${updatedOrder.type}`);
+  line(`Time: ${updatedOrder.time}`);
+  line(`Customer: ${updatedOrder.customer.name}`);
+  if (updatedOrder.type === "delivery") {
+    line(updatedOrder.customer.address);
+    line(updatedOrder.customer.postcode);
+    if (updatedOrder.customer.phone)
+      line(`Phone: ${updatedOrder.customer.phone}`);
+  }
+  line("--------------------------------", 6.5, false, "center");
+
+  // ---- ITEMS (with wrapping + right-aligned prices) ----
+  updatedOrder.items.forEach((it) => {
+    const nameQty = `${it.name} x${it.qty}`;
+    const price = `£${((it.pricePence * it.qty) / 100).toFixed(2)}`;
+
+    doc.setFontSize(6.2);
+    doc.setFont("helvetica", "normal");
+
+    // Split long names to fit roll width
+    const wrapped = doc.splitTextToSize(nameQty, maxTextWidth);
+
+    // Print all but last line normally
+    wrapped.forEach((t, idx) => {
+      if (idx < wrapped.length - 1) {
+        doc.text(t, leftX, y);
+        y += lineH;
+      } else {
+        // last line gets the price on the same line
+        doc.text(t, leftX, y);
+        doc.text(price, rightX, y, { align: "right" });
+        y += lineH;
+      }
     });
+  });
 
-    let y = 10;
-    const line = (text, size = 10, bold = false) => {
-      doc.setFontSize(size);
-      doc.setFont('helvetica', bold ? 'bold' : 'normal');
-      doc.text(text, 5, y);
-      y += 5;
-    };
+  // ---- DELIVERY CHARGE ----
+  if (updatedOrder.type === "delivery") {
+    const label = "Delivery Charge";
+    const price = "£3.00";
+    doc.text(label, leftX, y);
+    doc.text(price, rightX, y, { align: "right" });
+    y += lineH;
+  }
 
-    line('🐟 Fish & Chips Shop', 12, true);
-    line('------------------------------');
-    line(`Order Type: ${updatedOrder.type}`);
-    line(`Time: ${updatedOrder.time}`);
-    line(`Customer: ${updatedOrder.customer.name}`);
-    if (updatedOrder.type === 'delivery') {
-      line(`${updatedOrder.customer.address}`);
-      line(`${updatedOrder.customer.postcode}`);
-      if (updatedOrder.customer.phone) line(`Phone: ${updatedOrder.customer.phone}`);
-    }
-    line('------------------------------');
+  // ---- TOTAL ----
+  line("--------------------------------", 6.5, false, "center");
+  doc.setFontSize(7);
+  doc.setFont("helvetica", "bold");
+  doc.text(`Total: £${(updatedOrder.totalPence / 100).toFixed(2)}`, 29, y, {
+    align: "center",
+  });
+  y += lineH;
+  line("--------------------------------", 6.5, false, "center");
+  line(new Date().toLocaleString(), 6);
+  line("Thank you!", 6.5, true, "center");
 
-    updatedOrder.items.forEach(it => {
-  line(`${it.name} x${it.qty}`);
-  line(`£${(it.pricePence * it.qty / 100).toFixed(2)}`);
-});
-
-// Add delivery charge if applicable
-if (updatedOrder.type === 'delivery') {
-  line('Delivery Charge: £3.00');
+  doc.save(`order_${updatedOrder.customer.name || "customer"}.pdf`);
 }
 
-line('------------------------------');
-line(`Total: £${(updatedOrder.totalPence / 100).toFixed(2)}`, 12, true);
 
-
-    doc.save(`order_${updatedOrder.customer.name || 'customer'}.pdf`);
-  }
 
   // exit edit mode
   setEditingPart(null);
@@ -827,89 +869,149 @@ return (
       <div className="flex gap-2">
         <button
   onClick={() => {
-    const { jsPDF } = window.jspdf;
+  const { jsPDF } = window.jspdf;
 
-    const lineHeight = 5;
-    let y = 9;
-    let totalLines = 0;
+  // layout metrics (mm)
+  const leftX = 4;
+  const rightX = 54;
+  const pageWidth = 58;
+  const paddingBottom = 4;
+  const headerFontSize = 11;
+  const normalFontSize = 9;
+  const totalFontSize = 11;
+  const lineHeight = 5; // mm per line
+  const maxTextWidth = 40; // mm available for item text before wrapping
 
-    // --- Count header lines ---
-    totalLines += 6; // shop name, dividers, type, time, customer
+  // We'll use a temporary doc to calculate wrapping/line counts.
+  const tmp = new jsPDF({ unit: "mm", format: [pageWidth, 2000] });
 
-    // --- Count items ---
-    totalLines += viewingOrder.items.length;
+  // helper to count wrapped lines for a piece of text at a particular font size
+  const countWrappedLines = (text, fontSize) => {
+    tmp.setFont("courier", "normal");
+    tmp.setFontSize(fontSize);
+    const wrapped = tmp.splitTextToSize(text, maxTextWidth);
+    return wrapped.length;
+  };
 
-    // --- Count total section ---
-    totalLines += 3;
+  // initial y offset for the first line (same y used when rendering)
+  let initialY = 9;
+  let lines = 0;
 
-    // --- Count delivery address lines (if applicable) ---
-    if (viewingOrder.type === "delivery") {
-      totalLines += 5; // header, divider, name, address, postcode
-      if (viewingOrder.customer.phone) totalLines += 1; // phone line
-    }
+  // header lines (we'll render them with headerFontSize / normalFontSize)
+  lines += countWrappedLines("Fish & Chips Shop", headerFontSize);
+  lines += countWrappedLines("------------------------------", normalFontSize);
+  lines += countWrappedLines(`Order Type: ${viewingOrder.type}`, normalFontSize);
+  lines += countWrappedLines(`Time: ${viewingOrder.time}`, normalFontSize);
+  lines += countWrappedLines(`Customer: ${viewingOrder.customer.name}`, normalFontSize);
+  lines += countWrappedLines("------------------------------", normalFontSize);
 
-    // --- Calculate height exactly for all lines ---
-    const estHeight = y + totalLines * lineHeight + 5;
-    const pageHeight = Math.max(30, estHeight);
+  // items — measure wrapped lines for each item (use normalFontSize)
+  viewingOrder.items.forEach(it => {
+    const nameQty = `${it.name} x${it.qty}`;
+    lines += countWrappedLines(nameQty, normalFontSize);
+  });
 
-    // --- Create the PDF ---
-    const doc = new jsPDF({
-      orientation: "portrait",
-      unit: "mm",
-      format: [58, pageHeight],
+  // delivery charge line if applicable
+  if (viewingOrder.type === "delivery") {
+    lines += countWrappedLines("Delivery Charge", normalFontSize);
+  }
+
+  // separators + total section lines
+  lines += countWrappedLines("------------------------------", normalFontSize);
+  lines += countWrappedLines(`Total: £${(viewingOrder.totalPence / 100).toFixed(2)}`, totalFontSize);
+  lines += countWrappedLines("------------------------------", normalFontSize);
+
+  // delivery address block (if applicable)
+  if (viewingOrder.type === "delivery") {
+    lines += countWrappedLines("Delivery Address", headerFontSize);
+    lines += countWrappedLines("------------------------------", normalFontSize);
+    lines += countWrappedLines(viewingOrder.customer.name || "", normalFontSize);
+    lines += countWrappedLines(viewingOrder.customer.address || "", normalFontSize);
+    lines += countWrappedLines(viewingOrder.customer.postcode || "", normalFontSize);
+    if (viewingOrder.customer.phone) lines += countWrappedLines(`Phone: ${viewingOrder.customer.phone}`, normalFontSize);
+  }
+
+  // calculate exact required height
+  const contentHeight = lines * lineHeight;
+  const pageHeight = Math.max(30, initialY + contentHeight + paddingBottom);
+
+  // Create final doc with exact height
+  const doc = new jsPDF({
+    orientation: "portrait",
+    unit: "mm",
+    format: [pageWidth, pageHeight],
+  });
+
+  // rendering helpers
+  let y = initialY;
+  const addText = (txt, size = normalFontSize, bold = false, align = "left") => {
+    doc.setFontSize(size);
+    doc.setFont("courier", bold ? "bold" : "normal");
+    const x = align === "center" ? pageWidth / 2 : leftX;
+    doc.text(txt, x, y, { align: align === "center" ? "center" : "left" });
+    y += lineHeight;
+  };
+
+  // Header (render)
+  addText("Fish & Chips Shop", headerFontSize, true, "center");
+  addText("------------------------------", normalFontSize, false, "center");
+  addText(`Order Type: ${viewingOrder.type}`);
+  addText(`Time: ${viewingOrder.time}`);
+  addText(`Customer: ${viewingOrder.customer.name}`);
+  addText("------------------------------", normalFontSize, false, "center");
+
+  // Items (render with wrapping + right-aligned line totals)
+  viewingOrder.items.forEach(it => {
+    const nameQty = `${it.name} x${it.qty}`;
+    doc.setFontSize(normalFontSize);
+    doc.setFont("courier", "normal");
+    const wrapped = doc.splitTextToSize(nameQty, maxTextWidth); // uses same doc so widths are consistent
+    const lineTotal = `£${((it.pricePence * it.qty) / 100).toFixed(2)}`;
+
+    wrapped.forEach((t, idx) => {
+      if (idx < wrapped.length - 1) {
+        doc.text(t, leftX, y);
+        y += lineHeight;
+      } else {
+        // last wrapped line: print name and right-aligned price
+        doc.text(t, leftX, y);
+        doc.text(lineTotal, rightX, y, { align: "right" });
+        y += lineHeight;
+      }
     });
+  });
 
-    const addLine = (text = "", size = 10, bold = false, align = "left") => {
-      doc.setFontSize(size);
-      doc.setFont("courier", bold ? "bold" : "normal");
-      doc.text(text, align === "center" ? 29 : 4, y, { align });
-      y += lineHeight;
-    };
+  // Delivery charge
+  if (viewingOrder.type === "delivery") {
+    doc.text("Delivery Charge", leftX, y);
+    doc.text("£3.00", rightX, y, { align: "right" });
+    y += lineHeight;
+  }
 
-    // ---- HEADER ----
-    addLine("Fish & Chips Shop", 11, true, "center");
-    addLine("------------------------------", 10, false, "center");
-    addLine(`Order Type: ${viewingOrder.type}`);
-    addLine(`Time: ${viewingOrder.time}`);
-    addLine(`Customer: ${viewingOrder.customer.name}`);
-    addLine("------------------------------");
+  // Totals
+  addText("------------------------------", normalFontSize, false, "center");
+  addText(`Total: £${(viewingOrder.totalPence / 100).toFixed(2)}`, totalFontSize, true, "center");
+  addText("------------------------------", normalFontSize, false, "center");
 
-    // ---- ITEMS ----
-    viewingOrder.items.forEach((it) => {
-      addLine(`${it.name}  x${it.qty}`, 11);
-    });
+  // Delivery address block (if delivery) — ends the document
+  if (viewingOrder.type === "delivery") {
+    addText("Delivery Address", headerFontSize, true, "left");
+    addText("------------------------------", normalFontSize, false, "center");
+    addText(viewingOrder.customer.name || "");
+    addText(viewingOrder.customer.address || "");
+    addText(viewingOrder.customer.postcode || "");
+    if (viewingOrder.customer.phone) addText(`Phone: ${viewingOrder.customer.phone}`);
+  }
 
-    // ---- TOTAL ----
-if (viewingOrder.type === "delivery") {
-  addLine("Delivery Charge: £3.00");
-}
+  // Output PDF — page height was set before writing, so no trimming needed
+  const pdfBlob = doc.output("blob");
+  const pdfUrl = URL.createObjectURL(pdfBlob);
+  window.open(pdfUrl, "_blank");
+}}
 
-addLine("------------------------------");
-addLine(
-  `Total: £${(viewingOrder.totalPence / 100).toFixed(2)}`,
-  11,
-  true,
-  "center"
-);
 
-    addLine("------------------------------", 10, false, "center");
 
-    // ---- DELIVERY ADDRESS ----
-    if (viewingOrder.type === "delivery") {
-      addLine("Delivery Address", 11, true);
-      addLine("------------------------------");
-      addLine(viewingOrder.customer.name);
-      addLine(viewingOrder.customer.address);
-      addLine(viewingOrder.customer.postcode);
-      if (viewingOrder.customer.phone)
-        addLine(`Phone: ${viewingOrder.customer.phone}`);
-    }
 
-    // ---- Output PDF (no padding after final line) ----
-    const pdfBlob = doc.output("blob");
-    const pdfUrl = URL.createObjectURL(pdfBlob);
-    window.open(pdfUrl, "_blank");
-  }}
   className="px-4 py-2 rounded bg-slate-700 text-white font-semibold"
 >
   Download PDF Receipt
