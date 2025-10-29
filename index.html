@@ -755,7 +755,6 @@ return (
   onClick={() => {
     const { jsPDF } = window.jspdf;
 
-    // Create initial 58 mm × 65 mm page
     const doc = new jsPDF({
       orientation: "portrait",
       unit: "mm",
@@ -769,7 +768,6 @@ return (
     const addLine = (text = "", size = 9, bold = false, align = "left") => {
       doc.setFontSize(size);
       doc.setFont("courier", bold ? "bold" : "normal");
-      // add new page only when needed
       if (y > pageHeight - 8) {
         doc.addPage([58, 65], "portrait");
         y = 9;
@@ -786,7 +784,7 @@ return (
     addLine(`Customer: ${viewingOrder.customer.name}`);
     addLine("------------------------------");
 
-    // ---- ITEMS (no prices) ----
+    // ---- ITEMS ----
     viewingOrder.items.forEach((it) => {
       addLine(`${it.name}  x${it.qty}`);
     });
@@ -801,7 +799,7 @@ return (
     );
     addLine("------------------------------", 9, false, "center");
 
-    // ---- DELIVERY ADDRESS (same page if fits) ----
+    // ---- DELIVERY ADDRESS ----
     if (viewingOrder.type === "delivery") {
       addLine("Delivery Address", 10, true);
       addLine("------------------------------");
@@ -812,17 +810,17 @@ return (
         addLine(`Phone: ${viewingOrder.customer.phone}`);
     }
 
-    // ---- FOOTER ----
-    addLine(new Date().toLocaleString(), 8, false, "center");
-    addLine("Thank you!", 9, true, "center");
-
-    // ---- SAVE FILE ----
-    doc.save(`order_${viewingOrder.customer.name || "customer"}.pdf`);
+    // ---- OPEN PDF in new tab instead of saving ----
+    const pdfBlob = doc.output("blob");
+    const pdfUrl = URL.createObjectURL(pdfBlob);
+    window.open(pdfUrl, "_blank"); // keeps app open underneath
   }}
   className="px-4 py-2 rounded bg-slate-700 text-white font-semibold"
 >
   Download PDF Receipt
 </button>
+
+
 
 
 
