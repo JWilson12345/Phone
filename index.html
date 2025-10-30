@@ -3249,8 +3249,8 @@ function App() {
                   const rightX = 54;
                   const pageWidth = 58;
                   const paddingBottom = 4;
-                  const headerFontSize = 13;
-                  const normalFontSize = 10;
+                  const headerFontSize = 12;
+                  const normalFontSize = 9;
                   const totalFontSize = 11;
                   const lineHeight = 5; // mm per line
                   const maxTextWidth = 40; // mm available for item text before wrapping
@@ -3388,7 +3388,8 @@ function App() {
     }
 
     if (optText) {
-  doc.setFontSize(6);
+  doc.setFontSize(9);
+  doc.setFont("courier", "normal");
 
   // Remove any embedded (£...) text that comes from o.choiceLabel
   const cleanedText = optText.replace(/\(£[0-9.]+\)/g, "").trim();
@@ -3402,10 +3403,15 @@ function App() {
     optionDisplay += ` £${totalForItem.toFixed(2)}`;
   }
 
-  doc.text(optionDisplay, leftX, y);
-  y += lineHeight;
-}
+  // 🔹 Wrap long text to fit receipt width
+  const wrappedLines = doc.splitTextToSize(optionDisplay, maxTextWidth);
 
+  // Draw each wrapped line
+  wrappedLines.forEach(line => {
+    doc.text(line, leftX, y);
+    y += lineHeight;
+  });
+}
 
   });
 }
