@@ -3,7 +3,9 @@
 <head>
   <meta charset="utf-8"/>
   <meta name="viewport" content="width=device-width,initial-scale=1"/>
-  <title>Phone Order Manager (v6) — Options-enabled</title>
+  <title>Phone Orders</title>
+  
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
 
   <!-- Tailwind CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
@@ -78,37 +80,46 @@ const DELIVERY_CHARGE_PENCE = 300; // £3.00
 /* ---------- PRODUCTS with options (Fish category with Salt & Vinegar fixed) ---------- */
 const PRODUCTS = [
   {
-    id: 'cod_chips',
-    name: 'Fillet of Cod & Chips',
-    basePricePence: 1055,
-    tags: ['fish'],
-    options: [
-      { groupId: 'crumb', label: 'Scottish Speciality Crumb', type: 'boolean', pricePence: 100 },
-      {
-        groupId: 'saltvinegar',
-        label: 'Salt & Vinegar',
-        type: 'single',
-        choices: [
-          { id: 'sv', label: 'Salt & Vinegar', pricePence: 0 },
-          { id: 'salt', label: 'Salt only', pricePence: 0 },
-          { id: 'vinegar', label: 'Vinegar only', pricePence: 0 },
-          { id: 'none', label: 'None', pricePence: 0 },
-        ],
-        defaultChoice: 'sv',
-      },
-      {
-  groupId: 'nobatter',
-  label: 'No Batter',
-  type: 'single',
-  choices: [
-    { id: 'no', label: 'Batter', pricePence: 0 },
-    { id: 'yes', label: 'No Batter', pricePence: 0 },
+  id: 'cod_chips',
+  name: 'Fillet of Cod & Chips',
+  basePricePence: 1055,
+  tags: ['fish'],
+  options: [
+    {
+      groupId: 'crumb',
+      label: 'Scottish Speciality Crumb',
+      type: 'single',
+      choices: [
+        { id: 'no', label: 'Regular Batter', pricePence: 0 },
+        { id: 'yes', label: 'Scottish Speciality Crumb', pricePence: 100 },
+      ],
+      defaultChoice: 'no',
+    },
+    {
+      groupId: 'saltvinegar',
+      label: 'Salt & Vinegar',
+      type: 'single',
+      choices: [
+        { id: 'sv', label: 'Salt & Vinegar', pricePence: 0 },
+        { id: 'salt', label: 'Salt only', pricePence: 0 },
+        { id: 'vinegar', label: 'Vinegar only', pricePence: 0 },
+        { id: 'none', label: 'None', pricePence: 0 },
+      ],
+      defaultChoice: 'none',
+    },
+    {
+      groupId: 'nobatter',
+      label: 'No Batter',
+      type: 'single',
+      choices: [
+        { id: 'no', label: 'Batter', pricePence: 0 },
+        { id: 'yes', label: 'No Batter', pricePence: 0 },
+      ],
+      defaultChoice: 'no',
+    },
   ],
-  defaultChoice: 'no',
 },
 
-    ],
-  },
   {
     id: 'cod_fillet',
     name: 'Fillet of Cod',
@@ -148,7 +159,7 @@ const PRODUCTS = [
           { id: 'vinegar', label: 'Vinegar only', pricePence: 0 },
           { id: 'none', label: 'None', pricePence: 0 },
         ],
-        defaultChoice: 'sv',
+        defaultChoice: 'none',
       },
       {
   groupId: 'nobatter',
@@ -202,7 +213,7 @@ const PRODUCTS = [
           { id: 'vinegar', label: 'Vinegar only', pricePence: 0 },
           { id: 'none', label: 'None', pricePence: 0 },
         ],
-        defaultChoice: 'sv',
+        defaultChoice: 'none',
       },
       {
   groupId: 'nobatter',
@@ -256,7 +267,7 @@ const PRODUCTS = [
           { id: 'vinegar', label: 'Vinegar only', pricePence: 0 },
           { id: 'none', label: 'None', pricePence: 0 },
         ],
-        defaultChoice: 'sv',
+        defaultChoice: 'none',
       },
       {
   groupId: 'nobatter',
@@ -310,7 +321,7 @@ const PRODUCTS = [
           { id: 'vinegar', label: 'Vinegar only', pricePence: 0 },
           { id: 'none', label: 'None', pricePence: 0 },
         ],
-        defaultChoice: 'sv',
+        defaultChoice: 'none',
       },
     ],
   },
@@ -352,7 +363,7 @@ const PRODUCTS = [
           { id: 'vinegar', label: 'Vinegar only', pricePence: 0 },
           { id: 'none', label: 'None', pricePence: 0 },
         ],
-        defaultChoice: 'sv',
+        defaultChoice: 'none',
       },
     ],
   },
@@ -394,7 +405,7 @@ const PRODUCTS = [
         { id: 'vinegar', label: 'Vinegar only', pricePence: 0 },
         { id: 'none', label: 'None', pricePence: 0 },
       ],
-      defaultChoice: 'sv',
+      defaultChoice: 'none',
     },
     {
       groupId: 'nobatter',
@@ -408,6 +419,112 @@ const PRODUCTS = [
     },
   ],
 },
+{
+  id: 'woof',
+  name: 'Woof',
+  basePricePence: 660,
+  tags: ['fish'],
+  options: [
+    {
+      groupId: 'crumb',
+      label: 'Scottish Speciality Crumb instead of Batter',
+      type: 'single',
+      choices: [
+        { id: 'no', label: 'No', pricePence: 0 },
+        { id: 'yes', label: 'Yes', pricePence: 100 },
+      ],
+      defaultChoice: 'no',
+    },
+    {
+      groupId: 'add_chips',
+      label: 'Add chips',
+      type: 'single',
+      choices: [
+        { id: 'no', label: 'No', pricePence: 0 },
+        { id: 'small', label: 'Small', pricePence: 240 },
+        { id: 'regular', label: 'Regular', pricePence: 300 },
+        { id: 'large', label: 'Large', pricePence: 420 },
+      ],
+      defaultChoice: 'no',
+    },
+    {
+      groupId: 'saltvinegar',
+      label: 'Salt & Vinegar',
+      type: 'single',
+      choices: [
+        { id: 'sv', label: 'Salt & Vinegar', pricePence: 0 },
+        { id: 'salt', label: 'Salt only', pricePence: 0 },
+        { id: 'vinegar', label: 'Vinegar only', pricePence: 0 },
+        { id: 'none', label: 'None', pricePence: 0 },
+      ],
+      defaultChoice: 'none',
+    },
+    {
+      groupId: 'nobatter',
+      label: 'No Batter',
+      type: 'single',
+      choices: [
+        { id: 'no', label: 'Batter', pricePence: 0 },
+        { id: 'yes', label: 'No Batter', pricePence: 0 },
+      ],
+      defaultChoice: 'no',
+    },
+  ],
+},
+
+{
+  id: 'haddock',
+  name: 'Haddock',
+  basePricePence: 660,
+  tags: ['fish'],
+  options: [
+    {
+      groupId: 'crumb',
+      label: 'Scottish Speciality Crumb instead of Batter',
+      type: 'single',
+      choices: [
+        { id: 'no', label: 'No', pricePence: 0 },
+        { id: 'yes', label: 'Yes', pricePence: 100 },
+      ],
+      defaultChoice: 'no',
+    },
+    {
+      groupId: 'add_chips',
+      label: 'Add chips',
+      type: 'single',
+      choices: [
+        { id: 'no', label: 'No', pricePence: 0 },
+        { id: 'small', label: 'Small', pricePence: 240 },
+        { id: 'regular', label: 'Regular', pricePence: 300 },
+        { id: 'large', label: 'Large', pricePence: 420 },
+      ],
+      defaultChoice: 'no',
+    },
+    {
+      groupId: 'saltvinegar',
+      label: 'Salt & Vinegar',
+      type: 'single',
+      choices: [
+        { id: 'sv', label: 'Salt & Vinegar', pricePence: 0 },
+        { id: 'salt', label: 'Salt only', pricePence: 0 },
+        { id: 'vinegar', label: 'Vinegar only', pricePence: 0 },
+        { id: 'none', label: 'None', pricePence: 0 },
+      ],
+      defaultChoice: 'none',
+    },
+    {
+      groupId: 'nobatter',
+      label: 'No Batter',
+      type: 'single',
+      choices: [
+        { id: 'no', label: 'Batter', pricePence: 0 },
+        { id: 'yes', label: 'No Batter', pricePence: 0 },
+      ],
+      defaultChoice: 'no',
+    },
+  ],
+},
+
 
 /* ---------- CHIPS SECTION ---------- */
 {
@@ -426,7 +543,7 @@ const PRODUCTS = [
         { id: 'vinegar', label: 'Vinegar only', pricePence: 0 },
         { id: 'none', label: 'None', pricePence: 0 },
       ],
-      defaultChoice: 'sv',
+      defaultChoice: 'none',
     },
   ],
 },
@@ -447,7 +564,7 @@ const PRODUCTS = [
         { id: 'vinegar', label: 'Vinegar only', pricePence: 0 },
         { id: 'none', label: 'None', pricePence: 0 },
       ],
-      defaultChoice: 'sv',
+      defaultChoice: 'none',
     },
   ],
 },
@@ -468,7 +585,7 @@ const PRODUCTS = [
         { id: 'vinegar', label: 'Vinegar only', pricePence: 0 },
         { id: 'none', label: 'None', pricePence: 0 },
       ],
-      defaultChoice: 'sv',
+      defaultChoice: 'none',
     },
   ],
 },
@@ -513,7 +630,7 @@ const PRODUCTS = [
         { id: 'vinegar', label: 'Vinegar only', pricePence: 0 },
         { id: 'none', label: 'None', pricePence: 0 },
       ],
-      defaultChoice: 'sv',
+      defaultChoice: 'none',
     },
   ],
 },
@@ -556,7 +673,7 @@ const PRODUCTS = [
         { id: 'vinegar', label: 'Vinegar only', pricePence: 0 },
         { id: 'none', label: 'None', pricePence: 0 },
       ],
-      defaultChoice: 'sv',
+      defaultChoice: 'none',
     },
   ],
 },
@@ -589,7 +706,7 @@ const PRODUCTS = [
         { id: 'vinegar', label: 'Vinegar only', pricePence: 0 },
         { id: 'none', label: 'None', pricePence: 0 },
       ],
-      defaultChoice: 'sv',
+      defaultChoice: 'none',
     },
   ],
 },
@@ -622,7 +739,7 @@ const PRODUCTS = [
         { id: 'vinegar', label: 'Vinegar only', pricePence: 0 },
         { id: 'none', label: 'None', pricePence: 0 },
       ],
-      defaultChoice: 'sv',
+      defaultChoice: 'none',
     },
   ],
 },
@@ -655,7 +772,7 @@ const PRODUCTS = [
     { id: 'vinegar', label: 'Vinegar only', pricePence: 0 },
     { id: 'none', label: 'None', pricePence: 0 },
   ],
-  defaultChoice: 'sv',
+  defaultChoice: 'none',
 },
 ],
 },
@@ -673,8 +790,8 @@ const PRODUCTS = [
       label: 'Portion Size',
       type: 'single',
       choices: [
-        { id: '6pc', label: '6 Pieces (£3.80)', pricePence: 380 },
-        { id: '10pc', label: '10 Pieces (£5.85)', pricePence: 585 },
+        { id: '6pc', label: '6 Pieces (£3.80)', pricePence: 0 },
+        { id: '10pc', label: '10 Pieces (£5.85)', pricePence: 205 },
       ],
       defaultChoice: '6pc',
     },
@@ -700,7 +817,7 @@ const PRODUCTS = [
         { id: 'vinegar', label: 'Vinegar only', pricePence: 0 },
         { id: 'none', label: 'None', pricePence: 0 },
       ],
-      defaultChoice: 'sv',
+      defaultChoice: 'none',
     },
   ],
 },
@@ -716,8 +833,8 @@ const PRODUCTS = [
       label: 'Portion Size',
       type: 'single',
       choices: [
-        { id: '3pc', label: '3 Pieces (£3.15)', pricePence: 315 },
-        { id: '5pc', label: '5 Pieces (£4.45)', pricePence: 445 },
+        { id: '3pc', label: '3 Pieces (£3.15)', pricePence: 0 },
+        { id: '5pc', label: '5 Pieces (£4.45)', pricePence: 130 },
       ],
       defaultChoice: '3pc',
     },
@@ -743,7 +860,7 @@ const PRODUCTS = [
         { id: 'vinegar', label: 'Vinegar only', pricePence: 0 },
         { id: 'none', label: 'None', pricePence: 0 },
       ],
-      defaultChoice: 'sv',
+      defaultChoice: 'none',
     },
   ],
 },
@@ -756,20 +873,6 @@ const PRODUCTS = [
   name: 'Homemade Onion Rings',
   basePricePence: 330,
   tags: ['extras'],
-  options: [
-    {
-      groupId: 'saltvinegar',
-      label: 'Salt & Vinegar',
-      type: 'single',
-      choices: [
-        { id: 'sv', label: 'Salt & Vinegar', pricePence: 0 },
-        { id: 'salt', label: 'Salt only', pricePence: 0 },
-        { id: 'vinegar', label: 'Vinegar only', pricePence: 0 },
-        { id: 'none', label: 'None', pricePence: 0 },
-      ],
-      defaultChoice: 'sv',
-    },
-  ],
 },
 
 {
@@ -777,20 +880,6 @@ const PRODUCTS = [
   name: 'Cheese & Onion Fry-It',
   basePricePence: 205,
   tags: ['extras'],
-  options: [
-    {
-      groupId: 'saltvinegar',
-      label: 'Salt & Vinegar',
-      type: 'single',
-      choices: [
-        { id: 'sv', label: 'Salt & Vinegar', pricePence: 0 },
-        { id: 'salt', label: 'Salt only', pricePence: 0 },
-        { id: 'vinegar', label: 'Vinegar only', pricePence: 0 },
-        { id: 'none', label: 'None', pricePence: 0 },
-      ],
-      defaultChoice: 'sv',
-    },
-  ],
 },
 
 {
@@ -809,7 +898,7 @@ const PRODUCTS = [
         { id: 'vinegar', label: 'Vinegar only', pricePence: 0 },
         { id: 'none', label: 'None', pricePence: 0 },
       ],
-      defaultChoice: 'sv',
+      defaultChoice: 'none',
     },
   ],
 },
@@ -830,7 +919,7 @@ const PRODUCTS = [
         { id: 'vinegar', label: 'Vinegar only', pricePence: 0 },
         { id: 'none', label: 'None', pricePence: 0 },
       ],
-      defaultChoice: 'sv',
+      defaultChoice: 'none',
     },
   ],
 },
@@ -838,7 +927,7 @@ const PRODUCTS = [
 {
   id: 'chip_butty',
   name: 'Chip Butty',
-  basePricePence: 330,
+  basePricePence: 420,
   tags: ['extras'],
   options: [
     {
@@ -851,9 +940,14 @@ const PRODUCTS = [
         { id: 'vinegar', label: 'Vinegar only', pricePence: 0 },
         { id: 'none', label: 'None', pricePence: 0 },
       ],
-      defaultChoice: 'sv',
+      defaultChoice: 'none',
     },
   ],
+},{
+  id: 'fresh_bread_cake',
+  name: 'Fresh Bread Cake',
+  basePricePence: 120,
+  tags: ['extras'],
 },
 /* ---------- END EXTRAS SECTION ---------- */
 
@@ -869,8 +963,8 @@ const PRODUCTS = [
       label: 'Size',
       type: 'single',
       choices: [
-        { id: 'small', label: 'Small (£1.60)', pricePence: 160 },
-        { id: 'large', label: 'Large (£1.80)', pricePence: 180 },
+        { id: 'small', label: 'Small (£1.60)', pricePence: 0 },
+        { id: 'large', label: 'Large (£1.80)', pricePence: 20 },
       ],
       defaultChoice: 'small',
     },
@@ -888,8 +982,8 @@ const PRODUCTS = [
       label: 'Size',
       type: 'single',
       choices: [
-        { id: 'small', label: 'Small (£1.60)', pricePence: 160 },
-        { id: 'large', label: 'Large (£1.80)', pricePence: 180 },
+        { id: 'small', label: 'Small (£1.60)', pricePence: 0 },
+        { id: 'large', label: 'Large (£1.80)', pricePence: 20 },
       ],
       defaultChoice: 'small',
     },
@@ -907,8 +1001,8 @@ const PRODUCTS = [
       label: 'Size',
       type: 'single',
       choices: [
-        { id: 'small', label: 'Small (£1.60)', pricePence: 160 },
-        { id: 'large', label: 'Large (£1.80)', pricePence: 180 },
+        { id: 'small', label: 'Small (£1.60)', pricePence: 0 },
+        { id: 'large', label: 'Large (£1.80)', pricePence: 20 },
       ],
       defaultChoice: 'small',
     },
@@ -926,8 +1020,8 @@ const PRODUCTS = [
       label: 'Size',
       type: 'single',
       choices: [
-        { id: 'small', label: 'Small (£1.60)', pricePence: 160 },
-        { id: 'large', label: 'Large (£1.80)', pricePence: 180 },
+        { id: 'small', label: 'Small (£1.60)', pricePence: 0 },
+        { id: 'large', label: 'Large (£1.80)', pricePence: 20 },
       ],
       defaultChoice: 'small',
     },
@@ -945,14 +1039,15 @@ const PRODUCTS = [
       label: 'Size',
       type: 'single',
       choices: [
-        { id: 'small', label: 'Small (£1.60)', pricePence: 160 },
-        { id: 'large', label: 'Large (£1.80)', pricePence: 180 },
+        { id: 'small', label: 'Small (£1.60)', pricePence: 0 },
+        { id: 'large', label: 'Large (£1.80)', pricePence: 20 },
       ],
       defaultChoice: 'small',
     },
   ],
 },
 /* ---------- END SIDES SECTION ---------- */
+
 
 /* ---------- LITE BITES SECTION ---------- */
 {
@@ -968,6 +1063,9 @@ const PRODUCTS = [
       choices: [
         { id: 'peas', label: 'Mushy Peas', pricePence: 0 },
         { id: 'gravy', label: 'Gravy', pricePence: 0 },
+        { id: 'curry', label: 'Curry', pricePence: 0 },
+        { id: 'chipshop_curry', label: 'Chip Shop Curry', pricePence: 0 },
+        { id: 'beans', label: 'Heinz Beans', pricePence: 0 },
       ],
       defaultChoice: 'peas',
     },
@@ -981,7 +1079,7 @@ const PRODUCTS = [
         { id: 'vinegar', label: 'Vinegar only', pricePence: 0 },
         { id: 'none', label: 'None', pricePence: 0 },
       ],
-      defaultChoice: 'sv',
+      defaultChoice: 'none',
     },
   ],
 },
@@ -999,6 +1097,9 @@ const PRODUCTS = [
       choices: [
         { id: 'peas', label: 'Mushy Peas', pricePence: 0 },
         { id: 'gravy', label: 'Gravy', pricePence: 0 },
+        { id: 'curry', label: 'Curry', pricePence: 0 },
+        { id: 'chipshop_curry', label: 'Chip Shop Curry', pricePence: 0 },
+        { id: 'beans', label: 'Heinz Beans', pricePence: 0 },
       ],
       defaultChoice: 'peas',
     },
@@ -1012,7 +1113,7 @@ const PRODUCTS = [
         { id: 'vinegar', label: 'Vinegar only', pricePence: 0 },
         { id: 'none', label: 'None', pricePence: 0 },
       ],
-      defaultChoice: 'sv',
+      defaultChoice: 'none',
     },
   ],
 },
@@ -1030,6 +1131,9 @@ const PRODUCTS = [
       choices: [
         { id: 'peas', label: 'Mushy Peas', pricePence: 0 },
         { id: 'gravy', label: 'Gravy', pricePence: 0 },
+        { id: 'curry', label: 'Curry', pricePence: 0 },
+        { id: 'chipshop_curry', label: 'Chip Shop Curry', pricePence: 0 },
+        { id: 'beans', label: 'Heinz Beans', pricePence: 0 },
       ],
       defaultChoice: 'peas',
     },
@@ -1043,7 +1147,7 @@ const PRODUCTS = [
         { id: 'vinegar', label: 'Vinegar only', pricePence: 0 },
         { id: 'none', label: 'None', pricePence: 0 },
       ],
-      defaultChoice: 'sv',
+      defaultChoice: 'none',
     },
   ],
 },
@@ -1061,6 +1165,9 @@ const PRODUCTS = [
       choices: [
         { id: 'peas', label: 'Mushy Peas', pricePence: 0 },
         { id: 'gravy', label: 'Gravy', pricePence: 0 },
+        { id: 'curry', label: 'Curry', pricePence: 0 },
+        { id: 'chipshop_curry', label: 'Chip Shop Curry', pricePence: 0 },
+        { id: 'beans', label: 'Heinz Beans', pricePence: 0 },
       ],
       defaultChoice: 'peas',
     },
@@ -1074,7 +1181,7 @@ const PRODUCTS = [
         { id: 'vinegar', label: 'Vinegar only', pricePence: 0 },
         { id: 'none', label: 'None', pricePence: 0 },
       ],
-      defaultChoice: 'sv',
+      defaultChoice: 'none',
     },
   ],
 },
@@ -1092,6 +1199,9 @@ const PRODUCTS = [
       choices: [
         { id: 'peas', label: 'Mushy Peas', pricePence: 0 },
         { id: 'gravy', label: 'Gravy', pricePence: 0 },
+        { id: 'curry', label: 'Curry', pricePence: 0 },
+        { id: 'chipshop_curry', label: 'Chip Shop Curry', pricePence: 0 },
+        { id: 'beans', label: 'Heinz Beans', pricePence: 0 },
       ],
       defaultChoice: 'peas',
     },
@@ -1105,7 +1215,7 @@ const PRODUCTS = [
         { id: 'vinegar', label: 'Vinegar only', pricePence: 0 },
         { id: 'none', label: 'None', pricePence: 0 },
       ],
-      defaultChoice: 'sv',
+      defaultChoice: 'none',
     },
   ],
 },
@@ -1123,6 +1233,9 @@ const PRODUCTS = [
       choices: [
         { id: 'peas', label: 'Mushy Peas', pricePence: 0 },
         { id: 'gravy', label: 'Gravy', pricePence: 0 },
+        { id: 'curry', label: 'Curry', pricePence: 0 },
+        { id: 'chipshop_curry', label: 'Chip Shop Curry', pricePence: 0 },
+        { id: 'beans', label: 'Heinz Beans', pricePence: 0 },
       ],
       defaultChoice: 'peas',
     },
@@ -1136,189 +1249,12 @@ const PRODUCTS = [
         { id: 'vinegar', label: 'Vinegar only', pricePence: 0 },
         { id: 'none', label: 'None', pricePence: 0 },
       ],
-      defaultChoice: 'sv',
-    },
-  ],
-},
-
-{
-  id: 'pie_lite_bite',
-  name: 'Pie Lite Bite',
-  basePricePence: 950,
-  tags: ['litebites'],
-  options: [
-    {
-      groupId: 'pie_type',
-      label: 'Choose your Pie',
-      type: 'single',
-      choices: [
-        { id: 'mince_ale', label: 'Mince & Ale', pricePence: 0 },
-        { id: 'chicken_mushroom', label: 'Chicken & Mushroom', pricePence: 0 },
-        { id: 'steak', label: 'Steak', pricePence: 0 },
-        { id: 'mushroom_guinness', label: 'Mushroom & Guinness', pricePence: 0 },
-      ],
-      defaultChoice: 'mince_ale',
-    },
-    {
-      groupId: 'side1',
-      label: 'Side 1',
-      type: 'single',
-      choices: [
-        { id: 'peas', label: 'Mushy Peas', pricePence: 0 },
-        { id: 'gravy', label: 'Gravy', pricePence: 0 },
-      ],
-      defaultChoice: 'peas',
-    },
-    {
-      groupId: 'side2',
-      label: 'Side 2',
-      type: 'single',
-      choices: [
-        { id: 'peas', label: 'Mushy Peas', pricePence: 0 },
-        { id: 'gravy', label: 'Gravy', pricePence: 0 },
-      ],
-      defaultChoice: 'gravy',
-    },
-    {
-      groupId: 'saltvinegar',
-      label: 'Salt & Vinegar',
-      type: 'single',
-      choices: [
-        { id: 'sv', label: 'Salt & Vinegar', pricePence: 0 },
-        { id: 'salt', label: 'Salt only', pricePence: 0 },
-        { id: 'vinegar', label: 'Vinegar only', pricePence: 0 },
-        { id: 'none', label: 'None', pricePence: 0 },
-      ],
-      defaultChoice: 'sv',
-    },
-  ],
-},
-
-
-{
-  id: 'large_plain_sausage_lite_bite',
-  name: 'Large Sausage Lite Bite (Plain)',
-  basePricePence: 680,
-  tags: ['litebites'],
-  options: [
-    {
-      groupId: 'side_choice',
-      label: 'Choose your side',
-      type: 'single',
-      choices: [
-        { id: 'peas', label: 'Mushy Peas', pricePence: 0 },
-        { id: 'gravy', label: 'Gravy', pricePence: 0 },
-      ],
-      defaultChoice: 'peas',
-    },
-    {
-      groupId: 'saltvinegar',
-      label: 'Salt & Vinegar',
-      type: 'single',
-      choices: [
-        { id: 'sv', label: 'Salt & Vinegar', pricePence: 0 },
-        { id: 'salt', label: 'Salt only', pricePence: 0 },
-        { id: 'vinegar', label: 'Vinegar only', pricePence: 0 },
-        { id: 'none', label: 'None', pricePence: 0 },
-      ],
-      defaultChoice: 'sv',
-    },
-  ],
-},
-
-{
-  id: 'large_battered_sausage_lite_bite',
-  name: 'Large Sausage Lite Bite (Battered)',
-  basePricePence: 680,
-  tags: ['litebites'],
-  options: [
-    {
-      groupId: 'side_choice',
-      label: 'Choose your side',
-      type: 'single',
-      choices: [
-        { id: 'peas', label: 'Mushy Peas', pricePence: 0 },
-        { id: 'gravy', label: 'Gravy', pricePence: 0 },
-      ],
-      defaultChoice: 'peas',
-    },
-    {
-      groupId: 'saltvinegar',
-      label: 'Salt & Vinegar',
-      type: 'single',
-      choices: [
-        { id: 'sv', label: 'Salt & Vinegar', pricePence: 0 },
-        { id: 'salt', label: 'Salt only', pricePence: 0 },
-        { id: 'vinegar', label: 'Vinegar only', pricePence: 0 },
-        { id: 'none', label: 'None', pricePence: 0 },
-      ],
-      defaultChoice: 'sv',
-    },
-  ],
-},
-
-{
-  id: 'bigfoot_plain_lite_bite',
-  name: 'Big Foot Sausage Lite Bite (Plain)',
-  basePricePence: 760,
-  tags: ['litebites'],
-  options: [
-    {
-      groupId: 'side_choice',
-      label: 'Choose your side',
-      type: 'single',
-      choices: [
-        { id: 'peas', label: 'Mushy Peas', pricePence: 0 },
-        { id: 'gravy', label: 'Gravy', pricePence: 0 },
-      ],
-      defaultChoice: 'peas',
-    },
-    {
-      groupId: 'saltvinegar',
-      label: 'Salt & Vinegar',
-      type: 'single',
-      choices: [
-        { id: 'sv', label: 'Salt & Vinegar', pricePence: 0 },
-        { id: 'salt', label: 'Salt only', pricePence: 0 },
-        { id: 'vinegar', label: 'Vinegar only', pricePence: 0 },
-        { id: 'none', label: 'None', pricePence: 0 },
-      ],
-      defaultChoice: 'sv',
-    },
-  ],
-},
-
-{
-  id: 'bigfoot_battered_lite_bite',
-  name: 'Big Foot Sausage Lite Bite (Battered)',
-  basePricePence: 760,
-  tags: ['litebites'],
-  options: [
-    {
-      groupId: 'side_choice',
-      label: 'Choose your side',
-      type: 'single',
-      choices: [
-        { id: 'peas', label: 'Mushy Peas', pricePence: 0 },
-        { id: 'gravy', label: 'Gravy', pricePence: 0 },
-      ],
-      defaultChoice: 'peas',
-    },
-    {
-      groupId: 'saltvinegar',
-      label: 'Salt & Vinegar',
-      type: 'single',
-      choices: [
-        { id: 'sv', label: 'Salt & Vinegar', pricePence: 0 },
-        { id: 'salt', label: 'Salt only', pricePence: 0 },
-        { id: 'vinegar', label: 'Vinegar only', pricePence: 0 },
-        { id: 'none', label: 'None', pricePence: 0 },
-      ],
-      defaultChoice: 'sv',
+      defaultChoice: 'none',
     },
   ],
 },
 /* ---------- END LITE BITES SECTION ---------- */
+
 
 /* ---------- DRINKS SECTION ---------- */
 {
@@ -1461,7 +1397,7 @@ const PRODUCTS = [
         { id: 'vinegar', label: 'Vinegar only', pricePence: 0 },
         { id: 'none', label: 'None', pricePence: 0 },
       ],
-      defaultChoice: 'sv',
+      defaultChoice: 'none',
     },
     {
       groupId: 'cup_drink',
@@ -1506,7 +1442,7 @@ const PRODUCTS = [
         { id: 'vinegar', label: 'Vinegar only', pricePence: 0 },
         { id: 'none', label: 'None', pricePence: 0 },
       ],
-      defaultChoice: 'sv',
+      defaultChoice: 'none',
     },
     {
       groupId: 'cup_drink',
@@ -1551,7 +1487,7 @@ const PRODUCTS = [
         { id: 'vinegar', label: 'Vinegar only', pricePence: 0 },
         { id: 'none', label: 'None', pricePence: 0 },
       ],
-      defaultChoice: 'sv',
+      defaultChoice: 'none',
     },
     {
       groupId: 'cup_drink',
@@ -1596,7 +1532,7 @@ const PRODUCTS = [
         { id: 'vinegar', label: 'Vinegar only', pricePence: 0 },
         { id: 'none', label: 'None', pricePence: 0 },
       ],
-      defaultChoice: 'sv',
+      defaultChoice: 'none',
     },
     {
       groupId: 'cup_drink',
@@ -1641,7 +1577,7 @@ const PRODUCTS = [
         { id: 'vinegar', label: 'Vinegar only', pricePence: 0 },
         { id: 'none', label: 'None', pricePence: 0 },
       ],
-      defaultChoice: 'sv',
+      defaultChoice: 'none',
     },
     {
       groupId: 'cup_drink',
@@ -1658,7 +1594,823 @@ const PRODUCTS = [
 },
 /* ---------- END CHILDREN'S MEALS SECTION ---------- */
 
+/* ---------- PIES SECTION ---------- */
+{
+  id: 'cannonhall_steak_pie',
+  name: 'Cannon Hall Steak Pie',
+  basePricePence: 550,
+  tags: ['pies'],
+  options: [
+    {
+      groupId: 'add_chips',
+      label: 'Add Chips?',
+      type: 'single',
+      choices: [
+        { id: 'no', label: 'No', pricePence: 0 },
+        { id: 'small', label: 'Small (+£2.55)', pricePence: 255 },
+        { id: 'regular', label: 'Regular (+£3.20)', pricePence: 320 },
+        { id: 'large', label: 'Large (+£4.45)', pricePence: 445 },
+      ],
+      defaultChoice: 'no',
+    },
+    {
+      groupId: 'saltvinegar',
+      label: 'Salt & Vinegar',
+      type: 'single',
+      choices: [
+        { id: 'sv', label: 'Salt & Vinegar', pricePence: 0 },
+        { id: 'salt', label: 'Salt only', pricePence: 0 },
+        { id: 'vinegar', label: 'Vinegar only', pricePence: 0 },
+        { id: 'none', label: 'None', pricePence: 0 },
+      ],
+      defaultChoice: 'none',
+    },
+  ],
+},
 
+{
+  id: 'cannonhall_mince_ale_pie',
+  name: 'Cannon Hall Mince & Ale Pie',
+  basePricePence: 550,
+  tags: ['pies'],
+  options: [
+    {
+      groupId: 'add_chips',
+      label: 'Add Chips?',
+      type: 'single',
+      choices: [
+        { id: 'no', label: 'No', pricePence: 0 },
+        { id: 'small', label: 'Small (+£2.55)', pricePence: 255 },
+        { id: 'regular', label: 'Regular (+£3.20)', pricePence: 320 },
+        { id: 'large', label: 'Large (+£4.45)', pricePence: 445 },
+      ],
+      defaultChoice: 'no',
+    },
+    {
+      groupId: 'saltvinegar',
+      label: 'Salt & Vinegar',
+      type: 'single',
+      choices: [
+        { id: 'sv', label: 'Salt & Vinegar', pricePence: 0 },
+        { id: 'salt', label: 'Salt only', pricePence: 0 },
+        { id: 'vinegar', label: 'Vinegar only', pricePence: 0 },
+        { id: 'none', label: 'None', pricePence: 0 },
+      ],
+      defaultChoice: 'none',
+    },
+  ],
+},
+
+{
+  id: 'cannonhall_meat_potato_pie',
+  name: 'Cannon Hall Meat & Potato Pie',
+  basePricePence: 550,
+  tags: ['pies'],
+  options: [
+    {
+      groupId: 'add_chips',
+      label: 'Add Chips?',
+      type: 'single',
+      choices: [
+        { id: 'no', label: 'No', pricePence: 0 },
+        { id: 'small', label: 'Small (+£2.55)', pricePence: 255 },
+        { id: 'regular', label: 'Regular (+£3.20)', pricePence: 320 },
+        { id: 'large', label: 'Large (+£4.45)', pricePence: 445 },
+      ],
+      defaultChoice: 'no',
+    },
+    {
+      groupId: 'saltvinegar',
+      label: 'Salt & Vinegar',
+      type: 'single',
+      choices: [
+        { id: 'sv', label: 'Salt & Vinegar', pricePence: 0 },
+        { id: 'salt', label: 'Salt only', pricePence: 0 },
+        { id: 'vinegar', label: 'Vinegar only', pricePence: 0 },
+        { id: 'none', label: 'None', pricePence: 0 },
+      ],
+      defaultChoice: 'none',
+    },
+  ],
+},
+
+{
+  id: 'cannonhall_chicken_mushroom_pie',
+  name: 'Cannon Hall Chicken & Mushroom Pie',
+  basePricePence: 550,
+  tags: ['pies'],
+  options: [
+    {
+      groupId: 'add_chips',
+      label: 'Add Chips?',
+      type: 'single',
+      choices: [
+        { id: 'no', label: 'No', pricePence: 0 },
+        { id: 'small', label: 'Small (+£2.55)', pricePence: 255 },
+        { id: 'regular', label: 'Regular (+£3.20)', pricePence: 320 },
+        { id: 'large', label: 'Large (+£4.45)', pricePence: 445 },
+      ],
+      defaultChoice: 'no',
+    },
+    {
+      groupId: 'saltvinegar',
+      label: 'Salt & Vinegar',
+      type: 'single',
+      choices: [
+        { id: 'sv', label: 'Salt & Vinegar', pricePence: 0 },
+        { id: 'salt', label: 'Salt only', pricePence: 0 },
+        { id: 'vinegar', label: 'Vinegar only', pricePence: 0 },
+        { id: 'none', label: 'None', pricePence: 0 },
+      ],
+      defaultChoice: 'none',
+    },
+  ],
+},
+
+{
+  id: 'cannonhall_steak_mushroom_guinness_pie',
+  name: 'Cannon Hall Steak, Mushroom & Guinness Pie',
+  basePricePence: 550,
+  tags: ['pies'],
+  options: [
+    {
+      groupId: 'add_chips',
+      label: 'Add Chips?',
+      type: 'single',
+      choices: [
+        { id: 'no', label: 'No', pricePence: 0 },
+        { id: 'small', label: 'Small (+£2.55)', pricePence: 255 },
+        { id: 'regular', label: 'Regular (+£3.20)', pricePence: 320 },
+        { id: 'large', label: 'Large (+£4.45)', pricePence: 445 },
+      ],
+      defaultChoice: 'no',
+    },
+    {
+      groupId: 'saltvinegar',
+      label: 'Salt & Vinegar',
+      type: 'single',
+      choices: [
+        { id: 'sv', label: 'Salt & Vinegar', pricePence: 0 },
+        { id: 'salt', label: 'Salt only', pricePence: 0 },
+        { id: 'vinegar', label: 'Vinegar only', pricePence: 0 },
+        { id: 'none', label: 'None', pricePence: 0 },
+      ],
+      defaultChoice: 'none',
+    },
+  ],
+},
+
+{
+  id: 'cannonhall_steak_kidney_pie',
+  name: 'Cannon Hall Steak & Kidney Pie',
+  basePricePence: 550,
+  tags: ['pies'],
+  options: [
+    {
+      groupId: 'add_chips',
+      label: 'Add Chips?',
+      type: 'single',
+      choices: [
+        { id: 'no', label: 'No', pricePence: 0 },
+        { id: 'small', label: 'Small (+£2.55)', pricePence: 255 },
+        { id: 'regular', label: 'Regular (+£3.20)', pricePence: 320 },
+        { id: 'large', label: 'Large (+£4.45)', pricePence: 445 },
+      ],
+      defaultChoice: 'no',
+    },
+    {
+      groupId: 'saltvinegar',
+      label: 'Salt & Vinegar',
+      type: 'single',
+      choices: [
+        { id: 'sv', label: 'Salt & Vinegar', pricePence: 0 },
+        { id: 'salt', label: 'Salt only', pricePence: 0 },
+        { id: 'vinegar', label: 'Vinegar only', pricePence: 0 },
+        { id: 'none', label: 'None', pricePence: 0 },
+      ],
+      defaultChoice: 'none',
+    },
+  ],
+},
+
+/* Cannon Hall Pie Deals */
+{
+  id: 'cannonhall_steak_pie_deal',
+  name: 'Cannon Hall Steak Pie Deal (with Peas, Chips & Gravy)',
+  basePricePence: 1055,
+  tags: ['pies'],
+  options: [
+    {
+      groupId: 'saltvinegar',
+      label: 'Salt & Vinegar',
+      type: 'single',
+      choices: [
+        { id: 'sv', label: 'Salt & Vinegar', pricePence: 0 },
+        { id: 'salt', label: 'Salt only', pricePence: 0 },
+        { id: 'vinegar', label: 'Vinegar only', pricePence: 0 },
+        { id: 'none', label: 'None', pricePence: 0 },
+      ],
+      defaultChoice: 'none',
+    },
+  ],
+},
+
+{
+  id: 'cannonhall_chicken_mushroom_pie_deal',
+  name: 'Cannon Hall Chicken & Mushroom Pie Deal (with Peas, Chips & Gravy)',
+  basePricePence: 1055,
+  tags: ['pies'],
+  options: [
+    {
+      groupId: 'saltvinegar',
+      label: 'Salt & Vinegar',
+      type: 'single',
+      choices: [
+        { id: 'sv', label: 'Salt & Vinegar', pricePence: 0 },
+        { id: 'salt', label: 'Salt only', pricePence: 0 },
+        { id: 'vinegar', label: 'Vinegar only', pricePence: 0 },
+        { id: 'none', label: 'None', pricePence: 0 },
+      ],
+      defaultChoice: 'none',
+    },
+  ],
+},
+
+{
+  id: 'cannonhall_steak_kidney_pie_deal',
+  name: 'Cannon Hall Steak & Kidney Pie Deal (with Peas, Chips & Gravy)',
+  basePricePence: 1055,
+  tags: ['pies'],
+  options: [
+    {
+      groupId: 'saltvinegar',
+      label: 'Salt & Vinegar',
+      type: 'single',
+      choices: [
+        { id: 'sv', label: 'Salt & Vinegar', pricePence: 0 },
+        { id: 'salt', label: 'Salt only', pricePence: 0 },
+        { id: 'vinegar', label: 'Vinegar only', pricePence: 0 },
+        { id: 'none', label: 'None', pricePence: 0 },
+      ],
+      defaultChoice: 'none',
+    },
+  ],
+},
+
+{
+  id: 'cannonhall_mince_ale_pie_deal',
+  name: 'Cannon Hall Mince & Ale Pie Deal (with Peas, Chips & Gravy)',
+  basePricePence: 1055,
+  tags: ['pies'],
+  options: [
+    {
+      groupId: 'saltvinegar',
+      label: 'Salt & Vinegar',
+      type: 'single',
+      choices: [
+        { id: 'sv', label: 'Salt & Vinegar', pricePence: 0 },
+        { id: 'salt', label: 'Salt only', pricePence: 0 },
+        { id: 'vinegar', label: 'Vinegar only', pricePence: 0 },
+        { id: 'none', label: 'None', pricePence: 0 },
+      ],
+      defaultChoice: 'none',
+    },
+  ],
+},
+
+{
+  id: 'cannonhall_meat_potato_pie_deal',
+  name: 'Cannon Hall Meat & Potato Pie Deal (with Peas, Chips & Gravy)',
+  basePricePence: 1055,
+  tags: ['pies'],
+  options: [
+    {
+      groupId: 'saltvinegar',
+      label: 'Salt & Vinegar',
+      type: 'single',
+      choices: [
+        { id: 'sv', label: 'Salt & Vinegar', pricePence: 0 },
+        { id: 'salt', label: 'Salt only', pricePence: 0 },
+        { id: 'vinegar', label: 'Vinegar only', pricePence: 0 },
+        { id: 'none', label: 'None', pricePence: 0 },
+      ],
+      defaultChoice: 'none',
+    },
+  ],
+},
+
+{
+  id: 'cannonhall_steak_mushroom_guinness_pie_deal',
+  name: 'Cannon Hall Steak, Mushroom & Guinness Pie Deal (with Peas, Chips & Gravy)',
+  basePricePence: 1055,
+  tags: ['pies'],
+  options: [
+    {
+      groupId: 'saltvinegar',
+      label: 'Salt & Vinegar',
+      type: 'single',
+      choices: [
+        { id: 'sv', label: 'Salt & Vinegar', pricePence: 0 },
+        { id: 'salt', label: 'Salt only', pricePence: 0 },
+        { id: 'vinegar', label: 'Vinegar only', pricePence: 0 },
+        { id: 'none', label: 'None', pricePence: 0 },
+      ],
+      defaultChoice: 'none',
+    },
+  ],
+},
+
+/* Potters Pies */
+{
+  id: 'potters_steak_pie',
+  name: 'Potters Steak Pie',
+  basePricePence: 370,
+  tags: ['pies'],
+  options: [
+    {
+      groupId: 'add_chips',
+      label: 'Add Chips?',
+      type: 'single',
+      choices: [
+        { id: 'no', label: 'No', pricePence: 0 },
+        { id: 'small', label: 'Small (+£2.55)', pricePence: 255 },
+        { id: 'regular', label: 'Regular (+£3.20)', pricePence: 320 },
+        { id: 'large', label: 'Large (+£4.45)', pricePence: 445 },
+      ],
+      defaultChoice: 'no',
+    },
+    {
+      groupId: 'saltvinegar',
+      label: 'Salt & Vinegar',
+      type: 'single',
+      choices: [
+        { id: 'sv', label: 'Salt & Vinegar', pricePence: 0 },
+        { id: 'salt', label: 'Salt only', pricePence: 0 },
+        { id: 'vinegar', label: 'Vinegar only', pricePence: 0 },
+        { id: 'none', label: 'None', pricePence: 0 },
+      ],
+      defaultChoice: 'none',
+    },
+  ],
+},
+
+{
+  id: 'potters_chicken_mushroom_pie',
+  name: 'Potters Chicken & Mushroom Pie',
+  basePricePence: 370,
+  tags: ['pies'],
+  options: [
+    {
+      groupId: 'add_chips',
+      label: 'Add Chips?',
+      type: 'single',
+      choices: [
+        { id: 'no', label: 'No', pricePence: 0 },
+        { id: 'small', label: 'Small (+£2.55)', pricePence: 255 },
+        { id: 'regular', label: 'Regular (+£3.20)', pricePence: 320 },
+        { id: 'large', label: 'Large (+£4.45)', pricePence: 445 },
+      ],
+      defaultChoice: 'no',
+    },
+    {
+      groupId: 'saltvinegar',
+      label: 'Salt & Vinegar',
+      type: 'single',
+      choices: [
+        { id: 'sv', label: 'Salt & Vinegar', pricePence: 0 },
+        { id: 'salt', label: 'Salt only', pricePence: 0 },
+        { id: 'vinegar', label: 'Vinegar only', pricePence: 0 },
+        { id: 'none', label: 'None', pricePence: 0 },
+      ],
+      defaultChoice: 'none',
+    },
+  ],
+},
+
+{
+  id: 'potters_minced_beef_onion_pie',
+  name: 'Potters Minced Beef & Onion Pie',
+  basePricePence: 370,
+  tags: ['pies'],
+  options: [
+    {
+      groupId: 'add_chips',
+      label: 'Add Chips?',
+      type: 'single',
+      choices: [
+        { id: 'no', label: 'No', pricePence: 0 },
+        { id: 'small', label: 'Small (+£2.55)', pricePence: 255 },
+        { id: 'regular', label: 'Regular (+£3.20)', pricePence: 320 },
+        { id: 'large', label: 'Large (+£4.45)', pricePence: 445 },
+      ],
+      defaultChoice: 'no',
+    },
+    {
+      groupId: 'saltvinegar',
+      label: 'Salt & Vinegar',
+      type: 'single',
+      choices: [
+        { id: 'sv', label: 'Salt & Vinegar', pricePence: 0 },
+        { id: 'salt', label: 'Salt only', pricePence: 0 },
+        { id: 'vinegar', label: 'Vinegar only', pricePence: 0 },
+        { id: 'none', label: 'None', pricePence: 0 },
+      ],
+      defaultChoice: 'none',
+    },
+  ],
+},
+/* ---------- END PIES SECTION ---------- */
+
+/* ---------- GLUTEN FREE SECTION ---------- */
+
+/* Gluten Free Fish */
+{
+  id: 'gf_beans',
+  name: 'GF Beans',
+  basePricePence: 160,
+  tags: ['glutenfree'],
+  options: [
+    {
+      groupId: 'size',
+      label: 'Size',
+      type: 'single',
+      choices: [
+        { id: 'small', label: 'Small (£1.60)', pricePence: 0 },
+        { id: 'large', label: 'Large (£1.80)', pricePence: 20 },
+      ],
+      defaultChoice: 'small',
+    },
+  ],
+},
+
+{
+  id: 'gf_cod',
+  name: 'GF Cod',
+  basePricePence: 660,
+  tags: ['glutenfree'],
+  options: [
+    {
+      groupId: 'size',
+      label: 'Size',
+      type: 'single',
+      choices: [
+        { id: 'small', label: 'Small (£6.60)', pricePence: 0 },
+        { id: 'large', label: 'Large (£10.20)', pricePence: 360 },
+      ],
+      defaultChoice: 'small',
+    },
+    {
+      groupId: 'saltvinegar',
+      label: 'Salt & Vinegar',
+      type: 'single',
+      choices: [
+        { id: 'sv', label: 'Salt & Vinegar' },
+        { id: 'salt', label: 'Salt only' },
+        { id: 'vinegar', label: 'Vinegar only' },
+        { id: 'none', label: 'None' },
+      ],
+      defaultChoice: 'none',
+    },
+  ],
+},
+
+{
+  id: 'gf_haddock',
+  name: 'GF Haddock',
+  basePricePence: 740,
+  tags: ['glutenfree'],
+  options: [
+    {
+      groupId: 'size',
+      label: 'Size',
+      type: 'single',
+      choices: [
+        { id: 'small', label: 'Small (£7.40)', pricePence: 0 },
+        { id: 'large', label: 'Large (£9.75)', pricePence: 235 },
+      ],
+      defaultChoice: 'small',
+    },
+    {
+      groupId: 'saltvinegar',
+      label: 'Salt & Vinegar',
+      type: 'single',
+      choices: [
+        { id: 'sv', label: 'Salt & Vinegar' },
+        { id: 'salt', label: 'Salt only' },
+        { id: 'vinegar', label: 'Vinegar only' },
+        { id: 'none', label: 'None' },
+      ],
+      defaultChoice: 'none',
+    },
+  ],
+},
+
+{
+  id: 'gf_woof',
+  name: 'GF Woof',
+  basePricePence: 795,
+  tags: ['glutenfree'],
+  options: [
+    {
+      groupId: 'saltvinegar',
+      label: 'Salt & Vinegar',
+      type: 'single',
+      choices: [
+        { id: 'sv', label: 'Salt & Vinegar' },
+        { id: 'salt', label: 'Salt only' },
+        { id: 'vinegar', label: 'Vinegar only' },
+        { id: 'none', label: 'None' },
+      ],
+      defaultChoice: 'none',
+    },
+  ],
+},
+
+{
+  id: 'gf_turnover',
+  name: 'GF Turnover',
+  basePricePence: 405,
+  tags: ['glutenfree'],
+  options: [
+    {
+      groupId: 'saltvinegar',
+      label: 'Salt & Vinegar',
+      type: 'single',
+      choices: [
+        { id: 'sv', label: 'Salt & Vinegar' },
+        { id: 'salt', label: 'Salt only' },
+        { id: 'vinegar', label: 'Vinegar only' },
+        { id: 'none', label: 'None' },
+      ],
+      defaultChoice: 'none',
+    },
+  ],
+},
+
+{
+  id: 'gf_fish_bites',
+  name: 'GF Fish Bites',
+  basePricePence: 585,
+  tags: ['glutenfree'],
+  options: [
+    {
+      groupId: 'size',
+      label: 'Size',
+      type: 'single',
+      choices: [
+        { id: 'small', label: 'Small (£5.85)', pricePence: 0 },
+        { id: 'large', label: 'Large (£7.85)', pricePence: 200 },
+      ],
+      defaultChoice: 'small',
+    },
+    {
+      groupId: 'saltvinegar',
+      label: 'Salt & Vinegar',
+      type: 'single',
+      choices: [
+        { id: 'sv', label: 'Salt & Vinegar' },
+        { id: 'salt', label: 'Salt only' },
+        { id: 'vinegar', label: 'Vinegar only' },
+        { id: 'none', label: 'None' },
+      ],
+      defaultChoice: 'none',
+    },
+  ],
+},
+
+/* Gluten Free Chips */
+{
+  id: 'gf_chips',
+  name: 'GF Chips',
+  basePricePence: 255,
+  tags: ['glutenfree'],
+  options: [
+    {
+      groupId: 'size',
+      label: 'Size',
+      type: 'single',
+      choices: [
+        { id: 'small', label: 'Small (£2.55)', pricePence: 0 },
+        { id: 'regular', label: 'Regular (£3.20)', pricePence: 65 },
+        { id: 'large', label: 'Large (£4.45)', pricePence: 190 },
+      ],
+      defaultChoice: 'regular',
+    },
+  ],
+},
+
+/* Gluten Free Sausages */
+{
+  id: 'gf_large_sausage',
+  name: 'GF Large Sausage',
+  basePricePence: 315,
+  tags: ['glutenfree'],
+  options: [
+    {
+      groupId: 'type',
+      label: 'Type',
+      type: 'single',
+      choices: [
+        { id: 'plain', label: 'Plain' },
+        { id: 'battered', label: 'Battered' },
+      ],
+      defaultChoice: 'plain',
+    },
+  ],
+},
+
+/* Gluten Free Lite Bites */
+{
+  id: 'gf_litebite_fish',
+  name: 'GF Lite Bite Fish',
+  basePricePence: 990,
+  tags: ['glutenfree'],
+  options: [
+    {
+      groupId: 'gf_side',
+      label: 'GF Side',
+      type: 'single',
+      choices: [
+        { id: 'peas', label: 'Peas' },
+        { id: 'beans', label: 'Beans' },
+        { id: 'gravy', label: 'Gravy' },
+      ],
+      defaultChoice: 'peas',
+    },
+  ],
+},
+
+{
+  id: 'gf_litebite_large_sausage',
+  name: 'GF Lite Bite Large Sausage',
+  basePricePence: 720,
+  tags: ['glutenfree'],
+  options: [
+    {
+      groupId: 'type',
+      label: 'Type',
+      type: 'single',
+      choices: [
+        { id: 'plain', label: 'Plain' },
+        { id: 'battered', label: 'Battered' },
+      ],
+      defaultChoice: 'plain',
+    },
+    {
+      groupId: 'gf_side',
+      label: 'GF Side',
+      type: 'single',
+      choices: [
+        { id: 'peas', label: 'Peas' },
+        { id: 'beans', label: 'Beans' },
+        { id: 'gravy', label: 'Gravy' },
+      ],
+      defaultChoice: 'peas',
+    },
+  ],
+},
+
+{
+  id: 'gf_litebite_spam_fritter',
+  name: 'GF Lite Bite Large Spam Fritter',
+  basePricePence: 675,
+  tags: ['glutenfree'],
+  options: [
+    {
+      groupId: 'gf_side',
+      label: 'GF Side',
+      type: 'single',
+      choices: [
+        { id: 'peas', label: 'Peas' },
+        { id: 'beans', label: 'Beans' },
+        { id: 'gravy', label: 'Gravy' },
+      ],
+      defaultChoice: 'peas',
+    },
+  ],
+},
+
+{
+  id: 'gf_litebite_turnover',
+  name: 'GF Lite Bite Turnover',
+  basePricePence: 780,
+  tags: ['glutenfree'],
+  options: [
+    {
+      groupId: 'gf_side',
+      label: 'GF Side',
+      type: 'single',
+      choices: [
+        { id: 'peas', label: 'Peas' },
+        { id: 'beans', label: 'Beans' },
+        { id: 'gravy', label: 'Gravy' },
+      ],
+      defaultChoice: 'peas',
+    },
+  ],
+},
+
+{
+  id: 'gf_litebite_fish_bites',
+  name: 'GF Lite Bite 4 x Fish Bites',
+  basePricePence: 740,
+  tags: ['glutenfree'],
+  options: [
+    {
+      groupId: 'gf_side',
+      label: 'GF Side',
+      type: 'single',
+      choices: [
+        { id: 'peas', label: 'Peas' },
+        { id: 'beans', label: 'Beans' },
+        { id: 'gravy', label: 'Gravy' },
+      ],
+      defaultChoice: 'peas',
+    },
+  ],
+},
+
+/* Gluten Free Extras */
+{
+  id: 'gf_gravy',
+  name: 'GF Gravy',
+  basePricePence: 145,
+  tags: ['glutenfree'],
+  options: [
+    {
+      groupId: 'size',
+      label: 'Size',
+      type: 'single',
+      choices: [
+        { id: 'small', label: 'Small (£1.45)', pricePence: 0 },
+        { id: 'large', label: 'Large (£1.65)', pricePence: 20 },
+      ],
+      defaultChoice: 'small',
+    },
+  ],
+},
+
+{
+  id: 'gf_peas',
+  name: 'GF Peas',
+  basePricePence: 145,
+  tags: ['glutenfree'],
+  options: [
+    {
+      groupId: 'size',
+      label: 'Size',
+      type: 'single',
+      choices: [
+        { id: 'small', label: 'Small (£1.45)', pricePence: 0 },
+        { id: 'large', label: 'Large (£1.65)', pricePence: 20 },
+      ],
+      defaultChoice: 'small',
+    },
+  ],
+},
+
+{
+  id: 'gf_onion_rings',
+  name: 'GF Onion Rings',
+  basePricePence: 370,
+  tags: ['glutenfree'],
+},
+
+{
+  id: 'gf_potato_scallop',
+  name: 'GF Potato Scallop',
+  basePricePence: 150,
+  tags: ['glutenfree'],
+},
+
+{
+  id: 'gf_spam_fritter',
+  name: 'GF Spam Fritter',
+  basePricePence: 300,
+  tags: ['glutenfree'],
+},
+
+/* Gluten Free Kids */
+{
+  id: 'gf_kids_fish_bites',
+  name: 'GF Kids 4 x Fish Bites',
+  basePricePence: 570,
+  tags: ['glutenfree'],
+  options: [
+    {
+      groupId: 'gf_side',
+      label: 'GF Side',
+      type: 'single',
+      choices: [
+        { id: 'peas', label: 'Peas' },
+        { id: 'beans', label: 'Beans' },
+        { id: 'gravy', label: 'Gravy' },
+      ],
+      defaultChoice: 'peas',
+    },
+  ],
+},
+/* ---------- END GLUTEN FREE SECTION ---------- */
 
 
 ];
@@ -2105,8 +2857,8 @@ function App() {
       <header className="max-w-[92vw] mx-auto pt-6">
         <div className="flex items-start justify-between gap-4">
           <div>
-            <h1 className={`text-2xl md:text-3xl font-extrabold ${isDark ? 'text-white' : 'text-slate-800'}`}>Phone Order Manager</h1>
-            <p className={`${isDark ? 'text-slate-200/80' : 'text-slate-700/80'} mt-1`}>Phone order flow — collection & delivery (options-enabled)</p>
+            <h1 className={`text-2xl md:text-3xl font-extrabold ${isDark ? 'text-white' : 'text-slate-800'}`}>Phone Orders</h1>
+            <p className={`${isDark ? 'text-slate-200/80' : 'text-slate-700/80'} mt-1`}>Phone orders — collection & delivery</p>
           </div>
 
           <div className="flex items-center gap-2">
@@ -2168,7 +2920,7 @@ function App() {
                     <div className={`mb-3 p-3 rounded-md ${isDark ? 'bg-slate-700/40' : 'bg-slate-100'}`}>
                       <div className="flex flex-wrap items-center gap-2">
                         <button onClick={() => { clearFilters(); setFilterPanelOpen(false); }} className="px-3 py-1 rounded bg-slate-200 text-slate-800 text-sm">All</button>
-                        {['mains','chips','sausages','extras','chicken','sides','litebites','drinks','children'].map(tag => (
+                        {['clear','fish','chips','sausages','extras','chicken','sides','litebites','drinks','children','pies','glutenfree'].map(tag => (
                           <button key={tag} onClick={() => toggleTag(tag)} className={`${selectedTags.includes(tag) ? 'bg-indigo-600 text-white' : (isDark ? 'bg-slate-700 text-white' : 'bg-white text-slate-800')} px-3 py-1 rounded text-sm`}>{tag}</button>
                         ))}
                         <button onClick={() => clearFilters()} className="ml-auto text-sm text-rose-600">Clear</button>
@@ -2244,7 +2996,7 @@ function App() {
                   <div className="mt-2">
                     <input type="time" step="900" value={orderTime} onChange={(e)=>setOrderTime(e.target.value)} className={`px-3 py-2 rounded-lg ${isDark ? 'bg-slate-700 text-white' : 'bg-white text-slate-800'} border ${isDark ? 'border-slate-600' : 'border-slate-200'}`} />
                   </div>
-                  <div className={`${isDark ? 'text-slate-300' : 'text-slate-600'} text-sm mt-2`}>Choose a time (minutes fixed to 15-minute intervals)</div>
+                  <div className={`${isDark ? 'text-slate-300' : 'text-slate-600'} text-sm mt-2`}>Choose a time</div>
 
                   <div className="flex gap-3 mt-4">
                     <button onClick={() => setStep(2)} className="px-4 py-2 rounded-lg bg-slate-700 text-white">Back</button>
@@ -2607,13 +3359,58 @@ function App() {
                     });
 
                     if (it.options && it.options.length) {
-                      it.options.forEach(o => {
-                        const optLabel = o.choiceLabel ? `${o.label}: ${o.choiceLabel}` : o.label;
-                        doc.setFontSize(6);
-                        doc.text(`  - ${optLabel}${o.pricePence ? ` (+${(o.pricePence/100).toFixed(2)})` : ''}`, leftX, y);
-                        y += lineHeight;
-                      });
-                    }
+  it.options.forEach(o => {
+    let optText = "";
+
+    // Handle Salt & Vinegar specifically
+    if (o.groupId === "saltvinegar") {
+      switch (o.choiceId) {
+        case "sv":
+          optText = "add salt and vinegar";
+          break;
+        case "salt":
+          optText = "add salt";
+          break;
+        case "vinegar":
+          optText = "add vinegar";
+          break;
+        case "none":
+          optText = "";
+          break;
+        default:
+          optText = "";
+      }
+    } else {
+      // Default for all other options
+      optText = o.choiceLabel
+        ? `${o.label}: ${o.choiceLabel}`
+        : o.label;
+    }
+
+    if (optText) {
+  doc.setFontSize(6);
+
+  // Remove any embedded (£...) text that comes from o.choiceLabel
+  const cleanedText = optText.replace(/\(£[0-9.]+\)/g, "").trim();
+
+  // Build the display line
+  let optionDisplay = `  - ${cleanedText}`;
+
+  // If the option changes the price, show only the final total (no parentheses)
+  if (o.pricePence && o.pricePence > 0) {
+    const totalForItem = (it.pricePence * it.qty) / 100;
+    optionDisplay += ` £${totalForItem.toFixed(2)}`;
+  }
+
+  doc.text(optionDisplay, leftX, y);
+  y += lineHeight;
+}
+
+
+  });
+}
+
+
                   });
 
                   // Delivery charge
