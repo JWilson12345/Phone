@@ -3249,8 +3249,8 @@ function App() {
                   const rightX = 54;
                   const pageWidth = 58;
                   const paddingBottom = 4;
-                  const headerFontSize = 11;
-                  const normalFontSize = 9;
+                  const headerFontSize = 13;
+                  const normalFontSize = 12;
                   const totalFontSize = 11;
                   const lineHeight = 5; // mm per line
                   const maxTextWidth = 40; // mm available for item text before wrapping
@@ -3271,7 +3271,7 @@ function App() {
                   let lines = 0;
 
                   // header lines (we'll render them with headerFontSize / normalFontSize)
-                  lines += countWrappedLines("Fish & Chips Shop", headerFontSize);
+                  lines += countWrappedLines("2 Gates Fisheries", headerFontSize);
                   lines += countWrappedLines("------------------------------", normalFontSize);
                   lines += countWrappedLines(`Order Type: ${viewingOrder.type}`, normalFontSize);
                   lines += countWrappedLines(`Time: ${viewingOrder.time}`, normalFontSize);
